@@ -1,0 +1,1 @@
+puts "I'm going to calculate the number of hours in the year..."
