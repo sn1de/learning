@@ -1,0 +1,152 @@
+Test Example
+============
+
+This is a step by step example showing how to create a minimal, yet
+well structured basic ruby project incorporating unit testing. The
+purpose of our project is to create a Scanner class that moves 
+a value back and forth through a range. Something like this would 
+be useful when implementing the vision module for a Cylon Centurian.
+
+Create Your Project Directory Structure
+---------------------------------------
+
+The common convention for simple Ruby projects is to manage your
+various source files in multiple directories. 
+
+	mkdir -p scanner/{bin,lib,test}
+
+The lib directory will contain the source code that solves the 
+problem. The bin directory should contain the code that 'runs' 
+your code. Often this is a simple command line shell that then
+invokes the code you have created in the lib directory. The 
+test directory will contain the unit tests that will exercise and
+verify the code you created in lib.
+
+Start Coding
+------------
+
+Create a file in your lib folder and code the initial version of 
+your object. For example lib/scanner.rb:
+
+	class Scanner
+
+	  def initialize()
+	    @current = 1
+	  end
+	  
+	  def scan
+	    @current
+	  end
+
+	end
+
+Create a Test
+-------------
+
+The unit testing framework we're using for this example is 'minitest'. 
+Minitest is the unit testing framework that installs with the ruby
+language, so everthing you need to start testing is already available
+to you. For example test/test_scanner.rb:
+
+	require 'minitest/unit'
+	require 'minitest/autorun'
+	require 'scanner'
+
+	class TestScanner < MiniTest::Unit::TestCase
+
+		def test_initial_scan
+		    s = Scanner.new
+		    assert_equal(s.scan, 1, "The initial scan should be 1")	
+		end
+
+	end
+
+
+Run Your Tests
+--------------
+
+Notice the second line of our test file, the 'minitest/autorun' will 
+add some functionality that will look at our test code and 
+run the methods starting with 'test_' as tests. You will add additional
+methods with the 'test_' prefix to this class. Collectively, these 
+are referred to as a test case.
+
+In order to run our test case, we'll need to invoke ruby on the
+command line. We'll use the -I option to add the lib directory to
+the ruby library search path, so our test code can include 
+the scanner.rb code as required on line 3. Note that this command is 
+executed in the root of your project:
+
+	ruby -Ilib test/test_scanner.rb
+
+Over time, you will likely create multiple test cases. Manually 
+building a command line to include all of the test cases 
+can quickly become tedious. Thankfully, ruby comes with a built 
+in build management tool called rake. Rake is essentially 
+make for ruby, and allows you to automate many build process
+activities and workflows. It also comes with a build in TestTask
+class that lets you easily setup a task to run your tests. Create
+the Rakefile in the root of your project:
+
+	require 'rake/testtask'
+
+	Rake::TestTask.new do |t|
+	end
+
+By default, this creates a new task named 'test' and will add 
+the lib directory to the execution path, and search the test
+directory for all tests. We can now run our tests as follows:
+
+	rake test
+
+Lets make sure that our rake task really will automatically
+pickup additional test cases. Create test/test_advanced_scanner.rb:
+
+	require 'minitest/unit'
+	require 'scanner'
+
+	class TestAdvancedScanner < MiniTest::Unit::TestCase
+
+	  def test_explicit_start
+	    s = Scanner.new(10)
+	    assert_equal(10, s.scan, "Initial scan should match the initialized value")
+	  end
+
+	  def test_explicit_end
+	    s = Scanner.new(10, 12)
+	    assert_equal(10, s.scan, "Initial scan should match the initialized value")
+	    assert_equal(11, s.scan)
+	    assert_equal(12, s.scan, "Max scan should match initialized end value")
+	    assert_equal(11, s.scan, "Reverse after reaching initialized end value")
+	  end
+	end
+
+Notice that this test case is missing the require 'minitest/autorun'. Since
+autorun is really having to to with *how* the tests are executed (and 
+there are many, many alternatives to this without using autorun) and not
+the test cases themselves, it really should be specified outside of any 
+particular test case. We're going to move it into test/test_helper.rb:
+
+	require 'minitest/autorun'
+
+This is also a convenient place for any other 'helper' type code that 
+may cut accross various test cases, as well as any other configuration 
+or enhancements to the minitest framework. For example, to get more
+colorful test output, try adding the following to your test_helper.rb:
+
+	require 'minitest/pride'
+
+Now your should be able to run 'rake test' and all 5 test methods should
+be invoked (and fail). Then you can start enhancing the Scanner class
+to 'turn them green'.
+
+Resources
+---------
+
+[Programming Ruby 1.9 & 2.0, Chapter 13 Unit Testing and Chapter 16 Namespaces, Source Files and Distribution](http://pragprog.com/book/ruby4/programming-ruby-1-9-2-0)
+
+[Minitest Documentation Site](http://docs.seattlerb.org/minitest/)
+
+[Rake TestTask Documentation](http://rake.rubyforge.org/classes/Rake/TestTask.html)
+
+
