@@ -1,7 +1,7 @@
-require 'minitest/unit'
+require 'minitest/autorun'
 require 'scanner'
 
-class TestScanner < MiniTest::Unit::TestCase
+class TestScanner < MiniTest::Test
 
     def test_initial_scan
         s = Scanner.new
