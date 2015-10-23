@@ -7,12 +7,24 @@ class Scanner
     @direction = 1
   end
 
+  def reverse_direction
+    @direction *= -1
+  end
+
+  def boundary?
+    @current == @finish || @current == @start
+  end
+
+  def move_next
+    @current += @direction
+    if boundary?
+      reverse_direction
+    end
+  end
+
   def scan
     s = @current
-    @current += @direction
-    if @current == @finish || @current == @start
-      @direction *= -1
-    end
+    move_next
     s
   end
 

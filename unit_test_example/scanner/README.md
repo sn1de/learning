@@ -1,9 +1,10 @@
-Test Example
-============
+Test Example Using Minitest
+===========================
 
 This is a step by step example showing how to create a minimal, yet
-well structured basic ruby project incorporating unit testing. The
-purpose of our project is to create a Scanner class that moves 
+well structured basic ruby project incorporating unit testing. 
+
+The purpose of our project is to create a Scanner class that moves 
 a value back and forth through a range. Something like this would 
 be useful when implementing the vision module for a Cylon Centurian.
 
@@ -44,11 +45,12 @@ Create a Test
 -------------
 
 The unit testing framework we're using for this example is 'minitest'. 
-Minitest is the unit testing framework that installs with the ruby
-language, so everthing you need to start testing is already available
-to you. For example test/test_scanner.rb:
+If you are running version 1.9 then you already have minitest installed, since it is bundled in with the standard ruby installation. If you are on a newer version of ruby, you will need to install the gem (use sudo if necessary, depending on how your system is setup and what OS you are using):
 
-	require 'minitest/unit'
+	gem install minitest
+
+Now create your first test in the file test/test_scanner.rb:
+
 	require 'minitest/autorun'
 	require 'scanner'
 
@@ -61,18 +63,18 @@ to you. For example test/test_scanner.rb:
 
 	end
 
-
 Run Your Tests
 --------------
 
-Notice the second line of our test file, the 'minitest/autorun' will 
+Notice the first line of our test file, 'minitest/autorun' will 
 add some functionality that will look at our test code and 
 run the methods starting with 'test_' as tests. You will add additional
 methods with the 'test_' prefix to this class. Collectively, these 
 are referred to as a test case.
 
 In order to run our test case, we'll need to invoke ruby on the
-command line. We'll use the -I option to add the lib directory to
+command line (later, we'll automate this with rake). We'll 
+use the -I option to add the lib directory to
 the ruby library search path, so our test code can include 
 the scanner.rb code as required on line 3. Note that this command is 
 executed in the root of your project:
@@ -81,10 +83,9 @@ executed in the root of your project:
 
 Over time, you will likely create multiple test cases. Manually 
 building a command line to include all of the test cases 
-can quickly become tedious. Thankfully, ruby comes with a built 
-in build management tool called rake. Rake is essentially 
-make for ruby, and allows you to automate many build process
-activities and workflows. It also comes with a build in TestTask
+can quickly become tedious. Thankfully, ruby comes with build 
+management tool called rake. Rake allows you to automate many build process
+activities and workflows. It also comes with TestTask
 class that lets you easily setup a task to run your tests. Create
 the Rakefile in the root of your project:
 
@@ -102,7 +103,7 @@ directory for all tests. We can now run our tests as follows:
 Lets make sure that our rake task really will automatically
 pickup additional test cases. Create test/test_advanced_scanner.rb:
 
-	require 'minitest/unit'
+	require 'minitest/autorun'
 	require 'scanner'
 
 	class TestAdvancedScanner < MiniTest::Unit::TestCase
@@ -121,20 +122,19 @@ pickup additional test cases. Create test/test_advanced_scanner.rb:
 	  end
 	end
 
-Notice that this test case is missing the require 'minitest/autorun'. Since
-autorun is really having to to with *how* the tests are executed (and 
-there are many, many alternatives to this without using autorun) and not
-the test cases themselves, it really should be specified outside of any 
-particular test case. We're going to move it into test/test_helper.rb:
+Creating a helper file in test/test_helper.rb provides a convenient
+place for any other 'helper' type code that may cut accross
+various test cases, as well as any other configuration 
+or enhancements to the minitest framework. For example, lets add the minitest-reporter gem to our project to provide some more appealing test output. 
+First, install the minitest reporters gem:
 
-	require 'minitest/autorun'
+	gem install minitest-reporters
 
-This is also a convenient place for any other 'helper' type code that 
-may cut accross various test cases, as well as any other configuration 
-or enhancements to the minitest framework. For example, to get more
-colorful test output, try adding the following to your test_helper.rb:
+Now add the code to our test/test_helper.rb file in include and initialize 
+the reporter functionality:
 
-	require 'minitest/pride'
+	require "minitest/reporters"
+	Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
 
 Now your should be able to run 'rake test' and all 5 test methods should
 be invoked (and fail). Then you can start enhancing the Scanner class
@@ -148,5 +148,7 @@ Resources
 [Minitest Documentation Site](http://docs.seattlerb.org/minitest/)
 
 [Rake TestTask Documentation](http://rake.rubyforge.org/classes/Rake/TestTask.html)
+
+[Minitest Reporters](https://github.com/kern/minitest-reporters)
 
 
