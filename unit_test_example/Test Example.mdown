@@ -5,7 +5,8 @@ This is a step by step example showing how to create a minimal, yet
 well structured basic ruby project incorporating unit testing. The
 purpose of our project is to create a Scanner class that moves 
 a value back and forth through a range. Something like this would 
-be useful when implementing the vision module for a Cylon Centurian.
+be useful when implementing the vision module for a Cylon Centurian
+or the car KITT from Knight Rider.
 
 Create Your Project Directory Structure
 ---------------------------------------
@@ -19,7 +20,7 @@ The lib directory will contain the source code that solves the
 problem. The bin directory should contain the code that 'runs' 
 your code. Often this is a simple command line shell that then
 invokes the code you have created in the lib directory. The 
-test directory will contain the unit tests that will exercise and
+test directory will contain the unit tests that will execute and
 verify the code you created in lib.
 
 Start Coding
@@ -84,7 +85,7 @@ building a command line to include all of the test cases
 can quickly become tedious. Thankfully, ruby comes with a built 
 in build management tool called rake. Rake is essentially 
 make for ruby, and allows you to automate many build process
-activities and workflows. It also comes with a build in TestTask
+activities and workflows. It also comes with a built in TestTask
 class that lets you easily setup a task to run your tests. Create
 the Rakefile in the root of your project:
 
