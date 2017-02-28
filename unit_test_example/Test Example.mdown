@@ -29,17 +29,19 @@ Start Coding
 Create a file in your lib folder and code the initial version of 
 your object. For example lib/scanner.rb:
 
-	class Scanner
+```ruby
+class Scanner
 
-	  def initialize()
-	    @current = 1
-	  end
-	  
-	  def scan
-	    @current
-	  end
+  def initialize()
+    @current = 1
+  end
 
-	end
+  def scan
+    @current
+  end
+
+end
+```
 
 Create a Test
 -------------
@@ -49,24 +51,24 @@ Minitest is the unit testing framework that installs with the ruby
 language, so everthing you need to start testing is already available
 to you. For example test/test_scanner.rb:
 
-	require 'minitest/unit'
-	require 'minitest/autorun'
-	require 'scanner'
+```ruby
+require 'minitest/autorun'
+require 'scanner'
 
-	class TestScanner < MiniTest::Unit::TestCase
+class TestScanner < MiniTest::Test
 
-		def test_initial_scan
-		    s = Scanner.new
-		    assert_equal(s.scan, 1, "The initial scan should be 1")	
-		end
+    def test_initial_scan
+        s = Scanner.new
+        assert_equal(1, s.scan, "The initial scan should be 1") 
+    end
 
-	end
-
+end
+```
 
 Run Your Tests
 --------------
 
-Notice the second line of our test file, the 'minitest/autorun' will 
+Notice the first line of our test file, the 'minitest/autorun' will 
 add some functionality that will look at our test code and 
 run the methods starting with 'test_' as tests. You will add additional
 methods with the 'test_' prefix to this class. Collectively, these 
@@ -80,19 +82,23 @@ executed in the root of your project:
 
 	ruby -Ilib test/test_scanner.rb
 
-Over time, you will likely create multiple test cases. Manually 
+Over time, you will likely create multiple test cases, i.e. separate files
+with additional groups of tests. Manually 
 building a command line to include all of the test cases 
 can quickly become tedious. Thankfully, ruby comes with a built 
 in build management tool called rake. Rake is essentially 
 make for ruby, and allows you to automate many build process
 activities and workflows. It also comes with a built in TestTask
-class that lets you easily setup a task to run your tests. Create
-the Rakefile in the root of your project:
+class that lets you easily setup a task to run your tests. To do this
+for your project, create a file call 'Rakefile' in the root of your project
+and add the following:
 
+```ruby
 	require 'rake/testtask'
 
 	Rake::TestTask.new do |t|
 	end
+```
 
 By default, this creates a new task named 'test' and will add 
 the lib directory to the execution path, and search the test
@@ -103,39 +109,44 @@ directory for all tests. We can now run our tests as follows:
 Lets make sure that our rake task really will automatically
 pickup additional test cases. Create test/test_advanced_scanner.rb:
 
-	require 'minitest/unit'
-	require 'scanner'
+```ruby
+require 'scanner'
 
-	class TestAdvancedScanner < MiniTest::Unit::TestCase
+class TestAdvancedScanner < MiniTest::Test
 
-	  def test_explicit_start
-	    s = Scanner.new(10)
-	    assert_equal(10, s.scan, "Initial scan should match the initialized value")
-	  end
+  def test_explicit_start
+    s = Scanner.new(10)
+    assert_equal(10, s.scan, "Initial scan should match the initialized value")
+  end
 
-	  def test_explicit_end
-	    s = Scanner.new(10, 12)
-	    assert_equal(10, s.scan, "Initial scan should match the initialized value")
-	    assert_equal(11, s.scan)
-	    assert_equal(12, s.scan, "Max scan should match initialized end value")
-	    assert_equal(11, s.scan, "Reverse after reaching initialized end value")
-	  end
-	end
+  def test_explicit_end
+    s = Scanner.new(10, 12)
+    assert_equal(10, s.scan, "Initial scan should match the initialized value")
+    assert_equal(11, s.scan)
+    assert_equal(12, s.scan, "Max scan should match initialized end value")
+    assert_equal(11, s.scan, "Reverse after reaching initialized end value")
+  end
+end
+```
 
-Notice that this test case is missing the require 'minitest/autorun'. Since
-autorun is really having to to with *how* the tests are executed (and 
+Notice that this test case is missing the ```require 'minitest/autorun'```. Since autorun is really having to to with *how* the tests are executed (and 
 there are many, many alternatives to this without using autorun) and not
 the test cases themselves, it really should be specified outside of any 
 particular test case. We're going to move it into test/test_helper.rb:
 
-	require 'minitest/autorun'
-
+```ruby
+require 'minitest/autorun'
+```
 This is also a convenient place for any other 'helper' type code that 
 may cut accross various test cases, as well as any other configuration 
 or enhancements to the minitest framework. For example, to get more
 colorful test output, try adding the following to your test_helper.rb:
 
-	require 'minitest/pride'
+```ruby
+require 'minitest/autorun'
+require 'minitest/reporters'
+Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
+```
 
 Now your should be able to run 'rake test' and all 5 test methods should
 be invoked (and fail). Then you can start enhancing the Scanner class
