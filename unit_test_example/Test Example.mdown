@@ -94,10 +94,11 @@ for your project, create a file call 'Rakefile' in the root of your project
 and add the following:
 
 ```ruby
-	require 'rake/testtask'
+require 'rake/testtask'
 
-	Rake::TestTask.new do |t|
-	end
+Rake::TestTask.new do |t|
+  t.libs = %w(lib test)
+end
 ```
 
 By default, this creates a new task named 'test' and will add 
@@ -154,6 +155,8 @@ to 'turn them green'.
 
 Resources
 ---------
+
+[Getting Started With Minitest](https://blog.codeship.com/getting-started-with-minitest/)
 
 [Programming Ruby 1.9 & 2.0, Chapter 13 Unit Testing and Chapter 16 Namespaces, Source Files and Distribution](http://pragprog.com/book/ruby4/programming-ruby-1-9-2-0)
 

@@ -1,3 +1,4 @@
+require 'test_helper'
 require 'scanner'
 
 class TestScanner < MiniTest::Test
